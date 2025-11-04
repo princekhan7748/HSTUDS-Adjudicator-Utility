@@ -44,7 +44,8 @@
 
 .controls button,
 .settingsButton,
-.copyButton {
+.copyButton,
+.transcribeButton {
   border: none;
   padding: 1rem 2rem;
   border-radius: 15px;
@@ -55,17 +56,21 @@
   box-shadow:  5px 5px 10px #bec3c9, -5px -5px 10px #ffffff;
   transition: all 0.2s ease-in-out;
   color: #3b4d6b;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .controls button:hover,
 .settingsButton:hover,
-.copyButton:hover {
+.copyButton:hover,
+.transcribeButton:hover {
   box-shadow:  7px 7px 14px #bec3c9, -7px -7px 14px #ffffff;
 }
 
 .controls button:active,
 .settingsButton:active,
-.copyButton:active {
+.copyButton:active,
+.transcribeButton:active {
   background: #e0e5ec;
   box-shadow: inset 5px 5px 10px #bec3c9, inset -5px -5px 10px #ffffff;
   color: #333;
@@ -133,13 +138,51 @@
   padding: 0;
 }
 
-.bellList li {
+.bellListItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   margin-bottom: 0.5rem;
   padding: 0.5rem 1rem;
   border-radius: 8px;
   background: #e0e5ec;
-  box-shadow:  3px 3px 6px #bec3c9, -3px -3px 6px #ffffff;
+  box-shadow: 3px 3px 6px #bec3c9, -3px -3px 6px #ffffff;
 }
+
+.bellInput {
+  width: 50px;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 6px;
+  background: #e0e5ec;
+  box-shadow: inset 2px 2px 5px #bec3c9, inset -2px -2px 5px #ffffff;
+  text-align: center;
+  color: #333;
+}
+
+.deleteBellButton {
+  border: none;
+  background: transparent;
+  color: #c94040;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-left: auto;
+  padding: 0.5rem;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 3px 3px 6px #bec3c9, -3px -3px 6px #ffffff;
+}
+
+.deleteBellButton:hover {
+  background: #e0e5ec;
+  color: #ff0000;
+  box-shadow: 4px 4px 8px #bec3c9, -4px -4px 8px #ffffff;
+}
+
 
 .ringtoneUpload {
   margin-top: 1.5rem;

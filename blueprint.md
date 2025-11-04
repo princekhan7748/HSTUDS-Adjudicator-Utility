@@ -16,6 +16,7 @@ This document outlines the architecture, features, and development plan for the 
     *   Default bell sounds at 1-minute and 2-minute intervals.
     *   A settings panel to add custom bell timings (in minutes and/or seconds).
     *   Ability to upload a custom `.mp3` file to be used as the bell sound.
+    *   Editable and deletable bell timings.
     *   Uses the Web Audio API for reliable playback, bypassing browser autoplay restrictions.
     *   Visual indicator for the browser's audio lock status.
 *   **Real-time Transcription:**
@@ -23,8 +24,12 @@ This document outlines the architecture, features, and development plan for the 
     *   Requires microphone access.
     *   Displays the running transcript in a text area.
     *   A button to copy the full transcript to the clipboard.
+*   **Offline Transcription:**
+    *   A separate page (`/transcribe`) for transcribing audio files.
+    *   Users can upload an audio file and get the transcription.
 *   **Recording:**
     *   Downloads a `.webm` audio file of the session when the "Stop" button is clicked.
+    *   **Offline-First Recording:** The local audio recording starts immediately upon granting microphone access, independent of the live transcription service. This ensures a recording is always saved, even if the user is offline or the Deepgram connection fails.
 *   **UI/UX:**
     *   Clean, modern interface using FontAwesome icons for controls.
     *   A collapsible settings panel to keep the main view uncluttered.
@@ -36,26 +41,11 @@ This document outlines the architecture, features, and development plan for the 
 *   **Client-Side Interactivity:** The entire application is a client component (`"use client"`) due to its heavy reliance on browser APIs (Web Audio, MediaRecorder, Timers).
 *   **Modular & Scalable:** Code is organized into reusable components and hooks for maintainability.
 
-## 3. Current Task: Code Modularization
+## 3. Current Task: System Refinements & Bug Fixes
 
-**Objective:** Refactor the existing single-file application into a modular structure with clear separation of concerns. This will improve maintainability, readability, and scalability.
+**Objective:** Continuously improve the application's stability, user experience, and feature set.
 
-**Plan:**
+**Completed Sub-Tasks:**
 
-1.  **Create Custom Hooks for Logic:**
-    *   Create a `/hooks` directory.
-    *   **`useTimer.js`:** To manage all timer state and `setInterval` logic.
-    *   **`useAudio.js`:** To manage `AudioContext`, loading bell sounds, and playback.
-    *   **`useTranscription.js`:** To manage microphone access, `MediaRecorder`, and the Deepgram WebSocket connection.
-
-2.  **Create Presentational Components:**
-    *   Create a `/components` directory.
-    *   **`AudioStatus.js`:** A component to display the audio lock status.
-    *   **`Timer.js`:** A component for the timer display and controls.
-    *   **`Settings.js`:** A component for the settings panel.
-    *   **`Transcription.js`:** A component for the transcription text area.
-
-3.  **Refactor the Main Page (`/app/page.js`):**
-    *   Transform `page.js` into a container component.
-    *   It will import and use the new hooks to manage state.
-    *   It will render the new presentational components, passing the necessary data and functions as props.
+*   **Decoupled Recording:** Refactored the transcription hook to ensure local recording works reliably even if the live transcription service is unavailable.
+*   **Fixed API Key Errors:** Correctly configured server-side and client-side environment variables for the Deepgram API.

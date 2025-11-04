@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import styles from './page.module.css';
 import useTimer from '../hooks/useTimer';
 import useAudio from '../hooks/useAudio';
@@ -60,6 +61,18 @@ export default function Home() {
     }
   };
 
+  const deleteBell = (id) => {
+    const updatedBells = bells.filter(bell => bell.id !== id);
+    setBells(updatedBells);
+  };
+
+  const updateBell = (id, newTime) => {
+    const updatedBells = bells.map(bell => 
+      bell.id === id ? { ...bell, time: newTime } : bell
+    ).sort((a, b) => a.time - b.time);
+    setBells(updatedBells);
+  };
+
   const startSession = async () => {
     await unlockAudio();
     startTimer();
@@ -92,6 +105,8 @@ export default function Home() {
           newBellTime={newBellTime}
           setNewBellTime={setNewBellTime}
           addBell={addBell}
+          deleteBell={deleteBell}
+          updateBell={updateBell}
           handleBellFileChange={handleBellFileChange}
           formatTime={formatTime}
           audioRef={audioRef}
@@ -107,6 +122,9 @@ export default function Home() {
         />
 
         <Transcription transcript={transcript} />
+        <Link href="/transcribe" className={styles.transcribeButton}>
+          Transcribe Audio File
+        </Link>
 
       </main>
 
