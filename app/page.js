@@ -1,94 +1,118 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client';
+import { useState, useEffect } from 'react';
+import styles from './page.module.css';
+import useTimer from '../hooks/useTimer';
+import useAudio from '../hooks/useAudio';
+import useTranscription from '../hooks/useTranscription';
+import AudioStatus from '../components/AudioStatus';
+import Timer from '../components/Timer';
+import Settings from '../components/Settings';
+import Transcription from '../components/Transcription';
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const {
+    time,
+    isRunning,
+    isPaused,
+    startTimer,
+    stopTimer,
+    pauseTimer,
+    formatTime
+  } = useTimer();
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
+  const { 
+    audioStatus, 
+    unlockAudio, 
+    playBellSound, 
+    handleBellFileChange,
+    audioRef 
+  } = useAudio();
+
+  const {
+    transcript,
+    startTranscription,
+    stopTranscription,
+  } = useTranscription();
+
+  const [showSettings, setShowSettings] = useState(false);
+  const [bells, setBells] = useState([
+    { time: 60, id: 1 },
+    { time: 120, id: 2 },
+  ]);
+  const [newBellTime, setNewBellTime] = useState({ minutes: "", seconds: "" });
+
+  useEffect(() => {
+    if (isRunning && !isPaused && bells.some(bell => bell.time === time)) {
+      playBellSound(time);
+    }
+  }, [time, isRunning, isPaused, bells, playBellSound]);
+
+  const addBell = () => {
+    const minutes = parseInt(newBellTime.minutes, 10) || 0;
+    const seconds = parseInt(newBellTime.seconds, 10) || 0;
+    const totalSeconds = (minutes * 60) + seconds;
+
+    if (totalSeconds > 0) {
+      const newBell = { time: totalSeconds, id: Date.now() };
+      const updatedBells = [...bells, newBell].sort((a, b) => a.time - b.time);
+      setBells(updatedBells);
+      setNewBellTime({ minutes: "", seconds: "" });
+    }
+  };
+
+  const startSession = async () => {
+    await unlockAudio();
+    startTimer();
+    startTranscription();
+    setShowSettings(false);
+  };
+
+  const stopSession = () => {
+    stopTimer();
+    stopTranscription();
+  };
+
+  const pauseSession = () => {
+    pauseTimer();
+    // The transcription pausing is handled within the useTranscription hook
+  };
+
+
+  return (
+    <div className={styles.container} onClick={unlockAudio}>
+      <main className={styles.main}>
+        <h1 className={styles.title}>Adjudicator's Utility Tool</h1>
+        <AudioStatus status={audioStatus} />
+
+        <Settings 
+          isRunning={isRunning}
+          showSettings={showSettings}
+          setShowSettings={setShowSettings}
+          bells={bells}
+          newBellTime={newBellTime}
+          setNewBellTime={setNewBellTime}
+          addBell={addBell}
+          handleBellFileChange={handleBellFileChange}
+          formatTime={formatTime}
+          audioRef={audioRef}
+        />
+
+        <Timer 
+          time={time}
+          isRunning={isRunning}
+          startTimer={startSession}
+          stopTimer={stopSession}
+          pauseTimer={pauseSession}
+          formatTime={formatTime}
+        />
+
+        <Transcription transcript={transcript} />
+
       </main>
+
       <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+        <p>POWERED BY HSTUDS</p>
+        <p>©Debating Society of Hajee Mohammad Danesh Science and Technology University, 2025</p>
       </footer>
     </div>
   );
