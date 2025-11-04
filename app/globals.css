@@ -40,3 +40,32 @@ a {
     color-scheme: dark;
   }
 }
+
+.main-nav {
+  background-color: #2d3748;
+  color: white;
+  padding: 1rem;
+}
+
+.nav-container {
+  width: 90%;
+  max-width: 1024px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-brand {
+  font-weight: bold;
+  font-size: 1.25rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}

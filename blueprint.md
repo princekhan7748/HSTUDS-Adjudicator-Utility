@@ -2,7 +2,7 @@
 
 ## 1. Overview
 
-This document outlines the architecture, features, and development plan for the Adjudicator's Utility Tool. The application is a web-based utility for debate adjudicators, providing a timer, audible bells, and real-time speech-to-text transcription.
+This document outlines the architecture, features, and development plan for the Adjudicator's Utility Tool. The application is a web-based utility for debate adjudicators, providing a timer, audible bells, real-time speech-to-text transcription, and serverless file sharing.
 
 ## 2. Core Features & Design
 
@@ -38,14 +38,20 @@ This document outlines the architecture, features, and development plan for the 
 ### Design Principles:
 
 *   **Component-Based:** Built with React and Next.js.
-*   **Client-Side Interactivity:** The entire application is a client component (`"use client"`) due to its heavy reliance on browser APIs (Web Audio, MediaRecorder, Timers).
+*   **Client-Side Interactivity:** The entire application is a client component (`"use client"`) due to its heavy reliance on browser APIs (Web Audio, MediaRecorder, Timers, WebRTC).
 *   **Modular & Scalable:** Code is organized into reusable components and hooks for maintainability.
 
-## 3. Current Task: System Refinements & Bug Fixes
+## 3. Current Task: Serverless Peer-to-Peer File Sharing
 
-**Objective:** Continuously improve the application's stability, user experience, and feature set.
+**Objective:** Implement a feature that allows two users to directly share audio files with each other without a server, using WebRTC.
 
-**Completed Sub-Tasks:**
+**Plan:**
 
-*   **Decoupled Recording:** Refactored the transcription hook to ensure local recording works reliably even if the live transcription service is unavailable.
-*   **Fixed API Key Errors:** Correctly configured server-side and client-side environment variables for the Deepgram API.
+1.  **Create a New Share Page (`/app/share/page.js`):** A new page to host the file sharing UI.
+2.  **Create a `SharePage` Component (`/components/SharePage.js`):** A component with a user interface for sending and receiving files.
+    *   A "Send" section to select a file and generate a connection "Offer".
+    *   A "Receive" section to paste an "Offer" and generate an "Answer".
+    *   Status indicators to guide the users through the connection process.
+3.  **Create a `useP2P` Hook (`/hooks/useP2P.js`):** A custom hook to abstract the complex WebRTC logic for establishing a peer-to-peer data channel.
+4.  **Implement File Transfer Logic:** Logic to chunk the file, send it over the WebRTC data channel, and reassemble it on the receiver's end.
+5.  **Add Navigation:** Add a link to the new `/share` page in the main application layout.
