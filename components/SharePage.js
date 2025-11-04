@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import useP2P from '../../hooks/useP2P';
+import useP2P from '../hooks/useP2P';
 import styles from './SharePage.module.css';
 
 export default function SharePage() {

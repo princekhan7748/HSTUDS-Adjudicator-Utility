@@ -13,6 +13,33 @@ export default function useP2P() {
   const fileChunksRef = useRef([]);
   const fileMetadataRef = useRef(null);
 
+  const setupDataChannel = (channel) => {
+    channel.onopen = () => {
+      console.log('Data channel is open');
+    };
+
+    channel.onclose = () => {
+      console.log('Data channel is closed');
+    };
+
+    channel.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === 'metadata') {
+        fileMetadataRef.current = data.payload;
+        fileChunksRef.current = [];
+      } else if (data.type === 'chunk') {
+        const chunk = new Uint8Array(atob(data.payload).split('').map(c => c.charCodeAt(0)));
+        fileChunksRef.current.push(chunk);
+        
+        if (fileChunksRef.current.reduce((acc, c) => acc + c.length, 0) >= fileMetadataRef.current.size) {
+          const file = new Blob(fileChunksRef.current, { type: fileMetadataRef.current.type });
+          file.name = fileMetadataRef.current.name;
+          setReceivedFile(file);
+        }
+      }
+    };
+  };
+
   const createPeerConnection = useCallback(() => {
     const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
 
@@ -45,33 +72,6 @@ export default function useP2P() {
     peerConnectionRef.current = pc;
     return pc;
   }, []);
-
-  const setupDataChannel = (channel) => {
-    channel.onopen = () => {
-      console.log('Data channel is open');
-    };
-
-    channel.onclose = () => {
-      console.log('Data channel is closed');
-    };
-
-    channel.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.type === 'metadata') {
-        fileMetadataRef.current = data.payload;
-        fileChunksRef.current = [];
-      } else if (data.type === 'chunk') {
-        const chunk = new Uint8Array(atob(data.payload).split('').map(c => c.charCodeAt(0)));
-        fileChunksRef.current.push(chunk);
-        
-        if (fileChunksRef.current.reduce((acc, c) => acc + c.length, 0) >= fileMetadataRef.current.size) {
-          const file = new Blob(fileChunksRef.current, { type: fileMetadataRef.current.type });
-          file.name = fileMetadataRef.current.name;
-          setReceivedFile(file);
-        }
-      }
-    };
-  };
 
   const createOffer = useCallback(async () => {
     setIsConnecting(true);

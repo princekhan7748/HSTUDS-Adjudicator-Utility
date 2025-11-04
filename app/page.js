@@ -94,7 +94,7 @@ export default function Home() {
   return (
     <div className={styles.container} onClick={unlockAudio}>
       <main className={styles.main}>
-        <h1 className={styles.title}>Adjudicator's Utility Tool</h1>
+        <h1 className={styles.title}>Adjudicator&apos;s Utility Tool</h1>
         <AudioStatus status={audioStatus} />
 
         <Settings 
@@ -122,9 +122,6 @@ export default function Home() {
         />
 
         <Transcription transcript={transcript} />
-        <Link href="/transcribe" className={styles.transcribeButton}>
-          Transcribe Audio File
-        </Link>
 
       </main>
 
