@@ -1,7 +1,6 @@
 'use client';
 import { useState } from 'react';
 import styles from '../app/page.module.css';
-import { transcribeAudio } from '../app/actions';
 
 export default function TranscriptionPage() {
   const [transcription, setTranscription] = useState('');
@@ -23,8 +22,22 @@ export default function TranscriptionPage() {
     formData.append('file', file);
 
     try {
-      const result = await transcribeAudio(formData);
-      setTranscription(result);
+      const response = await fetch('/api/transcribe', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (result.error) {
+        throw new Error(result.error);
+      }
+
+      setTranscription(result.transcript);
     } catch (error) {
       console.error('Error transcribing audio:', error);
       alert('There was an error transcribing the audio.');
