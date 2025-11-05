@@ -9,8 +9,10 @@ import AudioStatus from '../components/AudioStatus';
 import Timer from '../components/Timer';
 import Settings from '../components/Settings';
 import Transcription from '../components/Transcription';
+import ModeToggle from '../components/ModeToggle';
 
 export default function Home() {
+  const [mode, setMode] = useState('normal');
   const {
     time,
     isRunning,
@@ -94,6 +96,7 @@ export default function Home() {
   return (
     <div className={styles.container} onClick={unlockAudio}>
       <main className={styles.main}>
+        <ModeToggle mode={mode} onToggle={setMode} />
         <h1 className={styles.title}>Adjudicator&apos;s Utility Tool</h1>
         <AudioStatus status={audioStatus} />
 
