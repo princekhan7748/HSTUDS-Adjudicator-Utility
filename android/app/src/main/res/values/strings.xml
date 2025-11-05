@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Debate Auditor</string>
+    <string name="title_activity_main">Debate Auditor</string>
+    <string name="package_name">com.debateauditor.app</string>
+    <string name="custom_url_scheme">com.debateauditor.app</string>
+</resources>
