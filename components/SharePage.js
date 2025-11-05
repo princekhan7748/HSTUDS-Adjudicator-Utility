@@ -45,6 +45,22 @@ export default function SharePage() {
     }
   };
 
+  const handleDownload = () => {
+    if (!receivedFile) return;
+
+    const url = URL.createObjectURL(receivedFile);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = receivedFile.name;
+    
+    document.body.appendChild(a);
+    a.click();
+    
+    URL.revokeObjectURL(url);
+    a.remove();
+  };
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Share Files Peer-to-Peer</h1>
@@ -92,9 +108,9 @@ export default function SharePage() {
       {receivedFile && (
         <div className={styles.successBox}>
           <h3 className={styles.successTitle}>File Received!</h3>
-          <a href={URL.createObjectURL(receivedFile)} download={receivedFile.name} className={styles.downloadLink}>
+          <button onClick={handleDownload} className={`${styles.button} ${styles.downloadLink}`}>
             Download {receivedFile.name}
-          </a>
+          </button>
         </div>
       )}
 
