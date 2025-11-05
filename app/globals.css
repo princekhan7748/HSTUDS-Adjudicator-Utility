@@ -69,3 +69,7 @@ a {
 .nav-link:hover {
   text-decoration: underline;
 }
+
+footer > div > div > a > svg {
+    display: none;
+}
